@@ -1,37 +1,37 @@
-# sxhkd configuration for ChadWM keybindings
-# Reload with: pkill -USR1 sxhkd
-
-# Terminal
-super + shift + Return
-    alacritty
-
-# Launcher
-super + d
-    rofi -show drun
-
-# Alternative launcher (dmenu)
-super + shift + d
-    dmenu_run -i -p "Run: "
-
-# File manager
-super + e
-    thunar
-
-# Browser
-super + shift + f
-    firefox
-
-# Power menu
-super + shift + x
-    ~/.local/bin/rofi-power-menu
-
-# Window management (if not handled by dwm/ChadWM)
-super + q
-    kill -TERM $(xdotool getactivewindow getwindowpid)
-
-# Screenshot (example)
-printscreen
-    flameshot gui
+# # sxhkd configuration for ChadWM keybindings
+# # Reload with: pkill -USR1 sxhkd
+#
+# # Terminal
+# super + shift + Return
+#     alacritty
+#
+# # Launcher
+# super + d
+#     rofi -show drun
+#
+# # Alternative launcher (dmenu)
+# super + shift + d
+#     dmenu_run -i -p "Run: "
+#
+# # File manager
+# super + e
+#     thunar
+#
+# # Browser
+# super + shift + f
+#     firefox
+#
+# # Power menu
+# super + shift + x
+#     ~/.local/bin/rofi-power-menu
+#
+# # Window management (if not handled by dwm/ChadWM)
+# super + q
+#     kill -TERM $(xdotool getactivewindow getwindowpid)
+#
+# # Screenshot (example)
+# printscreen
+#     flameshot gui
 
 # Volume (if pulseaudio)
 XF86AudioRaiseVolume

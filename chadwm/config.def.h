@@ -91,7 +91,7 @@ static const Rule rules[] = {
     { "Gimp",     NULL,       NULL,       0,            0,           1,           -1 },
     { "Firefox",  NULL,       NULL,       1 << 8,       0,           0,           -1 },
     { "eww",      NULL,       NULL,       0,            0,           1,           -1 },
-    { "Vivado",   NULL,       NULL,       0,            0,           1,           -1 },
+    // { "Vivado",   NULL,       NULL,       0,            0,           1,           -1 },
     { "ui-PlanAhead", NULL,   NULL,       0,            0,           1,           -1 },
 };
 
@@ -140,7 +140,7 @@ static const Layout layouts[] = {
 static const Key keys[] = {
     /* modifier                         key         function        argument */
 
-    // brightness and audio 
+    // brightness and audio
     {0,             XF86XK_AudioLowerVolume,    spawn, {.v = downvol}},
 	{0,             XF86XK_AudioMute, spawn,    {.v = mutevol }},
 	{0,             XF86XK_AudioRaiseVolume,    spawn, {.v = upvol}},
@@ -172,7 +172,7 @@ static const Key keys[] = {
     { MODKEY,                           XK_Left,    shiftview,      {.i = -1 } },
     { MODKEY,                           XK_Right,   shiftview,      {.i = +1 } },
 
-    // change m,cfact sizes 
+    // change m,cfact sizes
     { MODKEY,                           XK_h,       setmfact,       {.f = -0.05} },
     { MODKEY,                           XK_l,       setmfact,       {.f = +0.05} },
     { MODKEY|ShiftMask,                 XK_h,       setcfact,       {.f = +0.25} },
@@ -197,7 +197,7 @@ static const Key keys[] = {
     { MODKEY|ControlMask,               XK_o,       incrogaps,      {.i = +1 } },
     { MODKEY|ControlMask|ShiftMask,     XK_o,       incrogaps,      {.i = -1 } },
 
-    // inner+outer hori, vert gaps 
+    // inner+outer hori, vert gaps
     { MODKEY|ControlMask,               XK_6,       incrihgaps,     {.i = +1 } },
     { MODKEY|ControlMask|ShiftMask,     XK_6,       incrihgaps,     {.i = -1 } },
     { MODKEY|ControlMask,               XK_7,       incrivgaps,     {.i = +1 } },
