@@ -34,6 +34,12 @@ battery() {
 
 }
 
+nvme_temp() {
+  temp=$(cat /tmp/nvme_temp 2>/dev/null || echo "N/A")
+  printf "^c$black^ ^b$blue^ NVME"
+  printf "^c$white^ ^b$grey^ $temp°C ^b$black^"
+}
+
 brightness() {
   printf "^c$red^   "
   printf "^c$red^%.0f\n" $(cat /sys/class/backlight/*/brightness)
@@ -61,5 +67,5 @@ while true; do
   [ $interval = 0 ] || [ $(($interval % 3600)) = 0 ] && updates=$(pkg_updates)
   interval=$((interval + 1))
 
-  sleep 1 && xsetroot -name "$updates $(cpu) $(battery) $(mem) $(wlan) $(clock)"
+  sleep 1 && xsetroot -name "$updates $(cpu) $(battery) $(nvme_temp) $(mem) $(wlan) $(clock)"
 done
