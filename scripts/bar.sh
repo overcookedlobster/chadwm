@@ -50,6 +50,18 @@ mem() {
   printf "^c$red^ $(free -h | awk '/^Mem/ { print $3 }' | sed s/i//g)"
 }
 
+volume() {
+  volume=$(amixer sget Master 2>/dev/null | awk -F'[][]' 'END{ print $2 }' | sed 's/%//g' | tr -d '[:space:]')
+  status=$(amixer sget Master 2>/dev/null | awk -F'[][]' 'END{ print $4 }' | tr -d ' ')
+  if [ "$status" = "off" ]; then
+    printf "^c$black^ ^b$red^ 󰝟"
+    printf "^c$white^ ^b$grey^ Muted ^b$black^"
+  else
+    printf "^c$black^ ^b$blue^ 󰕾"
+    printf "^c$white^ ^b$grey^ $volume%% ^b$black^"
+  fi
+}
+
 wlan() {
 	case "$(cat /sys/class/net/wl*/operstate 2>/dev/null)" in
 	up) printf "^c$black^ ^b$blue^ 󰤨 ^d^%s" " ^c$blue^Connected" ;;
@@ -67,5 +79,5 @@ while true; do
   [ $interval = 0 ] || [ $(($interval % 3600)) = 0 ] && updates=$(pkg_updates)
   interval=$((interval + 1))
 
-  sleep 1 && xsetroot -name "$updates $(cpu) $(battery) $(nvme_temp) $(mem) $(wlan) $(clock)"
+  sleep 1 && xsetroot -name "$(pkg_updates) $(cpu) $(battery) $(nvme_temp) $(volume) $(mem) $(wlan) $(clock)"
 done

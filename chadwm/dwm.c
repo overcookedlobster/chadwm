@@ -589,6 +589,10 @@ void arrangemon(Monitor *m) {
   strncpy(m->ltsymbol, m->lt[m->sellt]->symbol, sizeof m->ltsymbol);
   if (m->lt[m->sellt]->arrange)
     m->lt[m->sellt]->arrange(m);
+  int n = 0;
+  Client *c;
+  for (c = m->clients; c; c = c->next) if (ISVISIBLE(c)) n++;
+  if (n == 0) drawlogo(m); else clearlogo(m);
 }
 
 void attach(Client *c) {
@@ -1739,7 +1743,26 @@ void expose(XEvent *e) {
     drawbar(m);
     if (m == selmon)
       updatesystray();
+  } else if (ev->count == 0 && ev->window == root) {
+    for (m = mons; m; m = m->next) {
+      int n = 0;
+      Client *c;
+      for (c = m->clients; c; c = c->next) if (ISVISIBLE(c)) n++;
+      if (n == 0) drawlogo(m); else clearlogo(m);
+    }
   }
+}
+
+void drawlogo(Monitor *m) {
+  XSetForeground(drw->dpy, drw->gc, scheme[SchemeNorm][ColFg].pixel);
+  XSetBackground(drw->dpy, drw->gc, scheme[SchemeNorm][ColBg].pixel);
+   // XSetFont(drw->dpy, drw->gc, drw->fonts->xfont->font->fid);
+  XDrawString(drw->dpy, root, drw->gc, m->wx + (m->ww - TEXTW("dwm")) / 2, m->wy + (m->wh + drw->fonts->h) / 2, "dwm", 3);
+}
+
+void clearlogo(Monitor *m) {
+  XSetForeground(drw->dpy, drw->gc, scheme[SchemeNorm][ColBg].pixel);
+  XFillRectangle(drw->dpy, root, drw->gc, m->wx + (m->ww - TEXTW("dwm")) / 2, m->wy + (m->wh - bh) / 2, TEXTW("dwm"), bh);
 }
 
 void focus(Client *c) {

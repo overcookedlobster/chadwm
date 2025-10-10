@@ -291,4 +291,5 @@ static const Button buttons[] = {
     { ClkTabPrev,           0,              Button1,        movestack,      { .i = -1 } },
     { ClkTabNext,           0,              Button1,        movestack,      { .i = +1 } },
     { ClkTabClose,          0,              Button1,        killclient,     {0} },
+    { ClkRootWin,           0,              Button3,        spawn,          SHCMD("rofi -show drun") },
 };
