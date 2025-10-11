@@ -35,9 +35,10 @@ battery() {
 }
 
 nvme_temp() {
-  temp=$(cat /tmp/nvme_temp 2>/dev/null || echo "N/A")
+  controller_temp=$(cat /tmp/nvme_temp 2>/dev/null || echo "N/A")
+  dram_temp=$(cat /tmp/nvme_dram_temp 2>/dev/null || echo "N/A")
   printf "^c$black^ ^b$blue^ NVME"
-  printf "^c$white^ ^b$grey^ $temp°C ^b$black^"
+  printf "^c$white^ ^b$grey^ $controller_temp°C / $dram_temp°C ^b$black^"
 }
 
 brightness() {
@@ -78,6 +79,12 @@ while true; do
 
   [ $interval = 0 ] || [ $(($interval % 3600)) = 0 ] && updates=$(pkg_updates)
   interval=$((interval + 1))
+
+  # Update NVMe temps every 5 seconds (adjust counter as needed)
+  if [ $((interval % 5)) = 0 ]; then
+    ./update_nvme_temp.sh
+    ./update_nvme_dram_temp.sh
+  fi
 
   sleep 1 && xsetroot -name "$(pkg_updates) $(cpu) $(battery) $(nvme_temp) $(volume) $(mem) $(wlan) $(clock)"
 done
