@@ -689,8 +689,10 @@ void buttonpress(XEvent *e) {
 		}
 	}
 	else if((c = wintoclient(ev->window))) {
-    focus(c);
-    restack(selmon);
+    if (ev->button != 4 && ev->button != 5) {
+      focus(c);
+      restack(selmon);
+    }
     XAllowEvents(dpy, ReplayPointer, CurrentTime);
     click = ClkClientWin;
   }
