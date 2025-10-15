@@ -42,7 +42,7 @@ static const int new_window_attach_on_end = 0; /*  1 means the new window will a
 static const char *fonts[]          = {"Iosevka:style:medium:size=12" ,"JetBrainsMono Nerd Font Mono:style:medium:size=19" };
 
 // theme
-#include "themes/tundra.h"
+#include "themes/gruvchad.h"
 
 static const char *colors[][3]      = {
     /*                     fg       bg      border */
@@ -64,7 +64,7 @@ static const char *colors[][3]      = {
 };
 
 /* tagging */
-static char *tags[] = {"", "", "", "", "", "6", "7", "8", "9"};
+static char *tags[] = {"", "", "", "", "", "\uf02d", "\uf219", "8", "9"};
 
 static const char* eww[] = { "eww", "-c", "/home/siduck/.config/chadwm/eww", "open" , "eww", NULL };
 
