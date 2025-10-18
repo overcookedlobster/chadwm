@@ -1809,6 +1809,7 @@ void focusmon(const Arg *arg) {
     return;
   unfocus(selmon->sel, 0);
   selmon = m;
+  fprintf(stderr, "focusmon: selmon set to %p\n", (void *)selmon);
   focus(NULL);
 }
 
@@ -2074,6 +2075,7 @@ void manage(Window w, XWindowAttributes *wa) {
   } else {
     c->mon = selmon;
     applyrules(c);
+    fprintf(stderr, "manage: new window on monitor %p, tags %u\n", (void *)c->mon, c->tags);
   }
 
   if (c->x + WIDTH(c) > c->mon->wx + c->mon->ww)
