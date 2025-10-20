@@ -333,6 +333,7 @@ static void togglefloating(const Arg *arg);
 static void togglefullscr(const Arg *arg);
 static void toggletag(const Arg *arg);
 static void toggleview(const Arg *arg);
+static void toggleworkspacelock(const Arg *arg);
 static void freeicon(Client *c);
 static void hidewin(const Arg *arg);
 static void restorewin(const Arg *arg);
@@ -388,10 +389,12 @@ static Window root, wmcheckwin;
 static int hiddenWinStackTop = -1;
 static Client* hiddenWinStack[hiddenWinStackMax];
 
-/* configuration, allows nested code to access above variables */
-#include "config.h"
+static int workspaces_locked = 0;
 
-static void (*handler[LASTEvent])(XEvent *) = {
+ /* configuration, allows nested code to access above variables */
+ #include "config.h"
+ 
+ static void (*handler[LASTEvent])(XEvent *) = {
     [ButtonPress] = buttonpress,
     [ClientMessage] = clientmessage,
     [ConfigureRequest] = configurerequest,
@@ -1056,12 +1059,18 @@ int drawstatusbar(Monitor *m, int bh, char *stext) {
   short isCode = 0;
   char *text;
   char *p;
-
-  len = strlen(stext) + 1;
+  char *display_text;
+  if (workspaces_locked) {
+    asprintf(&display_text, "🔒 %s", stext);
+  } else {
+    display_text = stext;
+  }
+  len = strlen(display_text) + 1;
   if (!(text = (char *)malloc(sizeof(char) * len)))
     die("malloc");
   p = text;
-  memcpy(text, stext, len);
+  memcpy(text, display_text, len);
+  if (workspaces_locked) free(display_text);
 
   /* compute width of the status text */
   w = 0;
@@ -3140,7 +3149,7 @@ tabmode(const Arg *arg)
 		selmon->showtab = arg->ui % showtab_nmodes;
 	else
 		selmon->showtab = (selmon->showtab + 1 ) % showtab_nmodes;
-	arrange(selmon);
+  arrange(workspaces_locked ? NULL : selmon);
 }
 
 void tag(const Arg *arg) {
@@ -3193,6 +3202,11 @@ void togglefloating(const Arg *arg) {
 void togglefullscr(const Arg *arg) {
   if (selmon->sel)
     setfullscreen(selmon->sel, !selmon->sel->isfullscreen);
+}
+
+void toggleworkspacelock(const Arg *arg) {
+	workspaces_locked = !workspaces_locked;
+	arrange(NULL);
 }
 
 void toggletag(const Arg *arg) {
@@ -3763,8 +3777,29 @@ void view(const Arg *arg) {
 
 	if (selmon->showbar != selmon->pertag->showbars[selmon->pertag->curtag])
 		togglebar(NULL);
+  if (workspaces_locked) {
+    for (Monitor *m = mons; m; m = m->next) {
+      if (m == selmon) continue;
+      m->tagset[m->seltags] = selmon->tagset[selmon->seltags];
+      m->pertag->curtag = selmon->pertag->curtag;
+      m->pertag->prevtag = selmon->pertag->prevtag;
+      for (int i = 0; i <= LENGTH(tags); i++) {
+        m->pertag->nmasters[i] = selmon->pertag->nmasters[i];
+        m->pertag->mfacts[i] = selmon->pertag->mfacts[i];
+        m->pertag->sellts[i] = selmon->pertag->sellts[i];
+        m->pertag->ltidxs[i][0] = selmon->pertag->ltidxs[i][0];
+        m->pertag->ltidxs[i][1] = selmon->pertag->ltidxs[i][1];
+        m->pertag->showbars[i] = selmon->pertag->showbars[i];
+      }
+      m->nmaster = selmon->nmaster;
+      m->mfact = selmon->mfact;
+      m->sellt = selmon->sellt;
+      m->lt[0] = selmon->lt[0];
+      m->lt[1] = selmon->lt[1];
+    }
+  }
   focus(NULL);
-  arrange(selmon);
+  arrange(workspaces_locked ? NULL : selmon);
   	updatecurrentdesktop();
 }
 
