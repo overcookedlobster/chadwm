@@ -1,4 +1,9 @@
 /* See LICENSE file for copyright and license details. */
+#include <stddef.h>
+#include <X11/Xlib.h>
+#include <X11/Xft/Xft.h>
+#include <fontconfig/fontconfig.h>
+#include <X11/extensions/Xrender.h>
 
 typedef struct {
 	Cursor cursor;
