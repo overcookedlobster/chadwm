@@ -1,5 +1,12 @@
 #!/usr/bin/env sh
 
+# Set up your monitors here before dwm starts.
+# Run `xrandr` in your terminal to see available outputs and modes.
+# Example for two monitors:
+# xrandr --output eDP-1 --primary --mode 1920x1080 --output HDMI-1 --mode 1920x1080 --right-of eDP-1
+# Add your xrandr command here:
+
+xrandr --output HDMI-1 --mode 1920x1080 --pos 0x0 --rotate normal --output eDP-1 --primary --mode 1920x1080 --pos 0x1080 --rotate normal
 xrdb merge ~/.Xresources
 nitrogen --restore &
 xset r rate 200 50 &
