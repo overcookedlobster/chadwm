@@ -1844,8 +1844,9 @@ void clearlogo(Monitor *m) {
 
 void focus(Client *c) {
   if (!c || (!ISVISIBLE(c) || HIDDEN(c)))
-    for (c = selmon->stack; c && (!ISVISIBLE(c) || HIDDEN(c)); c = c->snext)
-      ;
+    for (c = selmon->stack; c; c = c->snext)
+      if (ISVISIBLE(c) && !HIDDEN(c))
+        break;
   if (selmon->sel && selmon->sel != c)
     unfocus(selmon->sel, 0);
   if (c) {
@@ -1865,7 +1866,9 @@ void focus(Client *c) {
     XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
     setfocus(c);
   } else {
-    XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
+    // Original: XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
+    // Patched: Focus barwin if monitor is empty
+    XSetInputFocus(dpy, selmon->barwin, RevertToPointerRoot, CurrentTime);
     XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
   }
   selmon->sel = c;
@@ -3471,15 +3474,12 @@ void updatepreview(void) {
 void updatebarpos(Monitor *m) {
   Client *c;
   int nvis = 0;
-
   m->wy = m->my;
   m->wh = m->mh;
-
   for (c = m->clients; c; c = c->next) {
     if (ISVISIBLE(c))
       ++nvis;
   }
-
   if (m->showtab == showtab_always ||
       ((m->showtab == showtab_auto) && (nvis > 1) &&
        (m->lt[m->sellt]->arrange == monocle))) {
@@ -3503,7 +3503,7 @@ void updatebarpos(Monitor *m) {
       m->by = m->topbar ? m->wy : m->wy + m->wh;
     }
     if (m->topbar) {
-      m->wy = floatbar ? bh + gappoh : bh;
+      m->wy = m->my + (floatbar ? bh + gappoh : bh);  // Add m->my + here
     }
   } else
     m->by = -bh - m->gappoh;
